@@ -8,9 +8,12 @@ import {
   type CmsActionState,
 } from "@/app/cms/action-state"
 import {
+  DEFAULT_GAMES_HUB_FEATURED_SECTION_TITLE,
+  DEFAULT_GAMES_HUB_OTHER_GAMES_TITLE,
   DEFAULT_SLUG_COLOR,
   createGame,
   deleteGame,
+  DEFAULT_GAMES_HUB_HEADER_TITLE,
   normalizeSlugColor,
   updateGame,
   updateGamesHubSettings,
@@ -40,6 +43,10 @@ function asFeaturedSlot(value: FormDataEntryValue | null): 1 | 2 | null {
 
   const parsed = Number(value)
   return parsed === 1 || parsed === 2 ? parsed : null
+}
+
+function asChecked(value: FormDataEntryValue | null) {
+  return value === "on"
 }
 
 export async function createGameAction(formData: FormData) {
@@ -100,14 +107,33 @@ export async function updateGamesHubSettingsAction(
 ): Promise<CmsActionState> {
   try {
     await updateGamesHubSettings({
-      headerTitle: asText(formData.get("headerTitle"), "आज का चैलेंज"),
+      headerTitle: asText(
+        formData.get("headerTitle"),
+        DEFAULT_GAMES_HUB_HEADER_TITLE
+      ),
+      featuredSectionTitle: asText(
+        formData.get("featuredSectionTitle"),
+        DEFAULT_GAMES_HUB_FEATURED_SECTION_TITLE
+      ),
+      otherGamesSectionTitle: asText(
+        formData.get("otherGamesSectionTitle"),
+        DEFAULT_GAMES_HUB_OTHER_GAMES_TITLE
+      ),
+      showFeaturedSectionTitle: asChecked(
+        formData.get("showFeaturedSectionTitle")
+      ),
+      showOtherGamesSectionTitle: asChecked(
+        formData.get("showOtherGamesSectionTitle")
+      ),
     })
 
     revalidatePath("/webview")
     revalidatePath("/cms")
 
-    return successState("Header saved successfully.")
+    return successState("Games Hub settings saved successfully.")
   } catch (error) {
-    return errorState(getErrorMessage(error, "Failed to save header."))
+    return errorState(
+      getErrorMessage(error, "Failed to save Games Hub settings.")
+    )
   }
 }

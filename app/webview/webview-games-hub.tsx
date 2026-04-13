@@ -5,7 +5,7 @@
 import { ArrowLeftIcon } from "lucide-react"
 
 import { usePullToRefreshDisabler, useWebviewContext } from "@/bridge"
-import type { Game } from "@/lib/games"
+import type { Game, GamesHubSettings } from "@/lib/games"
 import { cn } from "@/lib/utils"
 
 function PromoCard({ game }: { game: Game }) {
@@ -65,11 +65,11 @@ function GameRow({ game }: { game: Game }) {
 
 export function WebviewGamesHub({
   games,
-  headerTitle,
+  settings,
   className,
 }: {
   games: Game[]
-  headerTitle: string
+  settings: GamesHubSettings
   className?: string
 }) {
   const { closeScreen } = useWebviewContext()
@@ -96,7 +96,7 @@ export function WebviewGamesHub({
             <ArrowLeftIcon className="size-6" strokeWidth={2.5} />
           </button>
           <h1 className="truncate text-[20px] leading-[30px] font-semibold text-[#2B2B2B]">
-            {headerTitle}
+            {settings.headerTitle}
           </h1>
         </div>
       </div>
@@ -110,9 +110,11 @@ export function WebviewGamesHub({
           <>
             {featuredGames.length > 0 ? (
               <section className="flex flex-col gap-2">
-                <h2 className="text-xl leading-[30px] font-semibold text-[#2B2B2B]">
-                  🔥 आज का चैलेंज
-                </h2>
+                {settings.showFeaturedSectionTitle ? (
+                  <h2 className="text-xl leading-[30px] font-semibold text-[#2B2B2B]">
+                    {settings.featuredSectionTitle}
+                  </h2>
+                ) : null}
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-3 sm:gap-5">
                   {featuredGames.map((game) => (
                     <PromoCard key={game.id} game={game} />
@@ -121,18 +123,22 @@ export function WebviewGamesHub({
               </section>
             ) : null}
 
-            <section className="flex flex-col">
-              <div>
-                <h2 className="text-xl leading-[30px] font-semibold text-[#2B2B2B]">
-                  🎮 अन्य गेम्स
-                </h2>
-              </div>
-              <div>
-                {otherGames.map((game) => (
-                  <GameRow key={game.id} game={game} />
-                ))}
-              </div>
-            </section>
+            {otherGames.length > 0 ? (
+              <section className="flex flex-col">
+                {settings.showOtherGamesSectionTitle ? (
+                  <div>
+                    <h2 className="text-xl leading-[30px] font-semibold text-[#2B2B2B]">
+                      {settings.otherGamesSectionTitle}
+                    </h2>
+                  </div>
+                ) : null}
+                <div>
+                  {otherGames.map((game) => (
+                    <GameRow key={game.id} game={game} />
+                  ))}
+                </div>
+              </section>
+            ) : null}
           </>
         )}
       </section>
