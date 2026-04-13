@@ -115,7 +115,8 @@ export default async function CmsPage() {
         <CardHeader>
           <CardTitle>Header</CardTitle>
           <CardDescription>
-            Edit the fixed title shown at the top of the Games Hub webview.
+            Edit the top title, section labels, and whether each heading is
+            shown.
           </CardDescription>
         </CardHeader>
         <CardContent>

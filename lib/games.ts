@@ -27,6 +27,10 @@ export type GamesResult = {
 
 export type GamesHubSettings = {
   headerTitle: string
+  featuredSectionTitle: string
+  otherGamesSectionTitle: string
+  showFeaturedSectionTitle: boolean
+  showOtherGamesSectionTitle: boolean
 }
 
 export type GamesHubSettingsResult = {
@@ -39,6 +43,8 @@ export type GamesHubSettingsResult = {
 export const DEFAULT_SLUG_COLOR = "#2B2B2B"
 
 export const DEFAULT_GAMES_HUB_HEADER_TITLE = "आज का चैलेंज"
+export const DEFAULT_GAMES_HUB_FEATURED_SECTION_TITLE = "🔥 आज का चैलेंज"
+export const DEFAULT_GAMES_HUB_OTHER_GAMES_TITLE = "🎮 अन्य गेम्स"
 
 const slugColorPattern = /^#[0-9A-Fa-f]{6}$/
 
@@ -51,6 +57,10 @@ export function normalizeSlugColor(value: string | null | undefined): string {
 
 const defaultGamesHubSettings: GamesHubSettings = {
   headerTitle: DEFAULT_GAMES_HUB_HEADER_TITLE,
+  featuredSectionTitle: DEFAULT_GAMES_HUB_FEATURED_SECTION_TITLE,
+  otherGamesSectionTitle: DEFAULT_GAMES_HUB_OTHER_GAMES_TITLE,
+  showFeaturedSectionTitle: true,
+  showOtherGamesSectionTitle: true,
 }
 
 const defaultGames: Game[] = [
@@ -153,12 +163,37 @@ function isMissingTableError(error: unknown, tableName: string): boolean {
   )
 }
 
+function isMissingColumnError(error: unknown, columnName: string): boolean {
+  const code = readErrorField(error, "code")
+  const message = readErrorField(error, "message")
+  const cause = readErrorField(error, "cause")
+
+  return (
+    code === "42703" ||
+    (typeof message === "string" &&
+      new RegExp(`column\s+.+${columnName}.+does not exist`, "i").test(
+        message
+      )) ||
+    (cause !== error && isMissingColumnError(cause, columnName))
+  )
+}
+
 function isMissingGamesTableError(error: unknown): boolean {
   return isMissingTableError(error, "games")
 }
 
 function isMissingGamesHubSettingsTableError(error: unknown): boolean {
   return isMissingTableError(error, "games_hub_settings")
+}
+
+function isOutdatedGamesHubSettingsSchemaError(error: unknown): boolean {
+  return (
+    isMissingGamesHubSettingsTableError(error) ||
+    isMissingColumnError(error, "featured_section_title") ||
+    isMissingColumnError(error, "other_games_section_title") ||
+    isMissingColumnError(error, "show_featured_section") ||
+    isMissingColumnError(error, "show_other_games_section")
+  )
 }
 
 function schemaNotReadyResult(): GamesResult {
@@ -177,7 +212,7 @@ function settingsSchemaNotReadyResult(): GamesHubSettingsResult {
     dbConfigured: true,
     schemaReady: false,
     error:
-      "Games Hub settings table is not available yet. Open CMS Migrations and apply the pending migration.",
+      "Games Hub settings schema is not up to date yet. Open CMS Migrations and apply the pending migration.",
   }
 }
 
@@ -192,9 +227,9 @@ function assertSchemaReady(error: unknown): never {
 }
 
 function assertSettingsSchemaReady(error: unknown): never {
-  if (isMissingGamesHubSettingsTableError(error)) {
+  if (isOutdatedGamesHubSettingsSchemaError(error)) {
     throw new Error(
-      "Games Hub settings table is not available yet. Apply the pending migration from /cms/migrations."
+      "Games Hub settings schema is not up to date yet. Apply the pending migration from /cms/migrations."
     )
   }
 
@@ -276,6 +311,10 @@ export async function getGamesHubSettings(): Promise<GamesHubSettingsResult> {
     const [settings] = await db
       .select({
         headerTitle: gamesHubSettingsTable.headerTitle,
+        featuredSectionTitle: gamesHubSettingsTable.featuredSectionTitle,
+        otherGamesSectionTitle: gamesHubSettingsTable.otherGamesSectionTitle,
+        showFeaturedSectionTitle: gamesHubSettingsTable.showFeaturedSection,
+        showOtherGamesSectionTitle: gamesHubSettingsTable.showOtherGamesSection,
       })
       .from(gamesHubSettingsTable)
       .where(eq(gamesHubSettingsTable.id, 1))
@@ -288,7 +327,7 @@ export async function getGamesHubSettings(): Promise<GamesHubSettingsResult> {
       error: null,
     }
   } catch (error) {
-    if (isMissingGamesHubSettingsTableError(error)) {
+    if (isOutdatedGamesHubSettingsSchemaError(error)) {
       return settingsSchemaNotReadyResult()
     }
 
@@ -388,12 +427,20 @@ export async function updateGamesHubSettings(input: GamesHubSettings) {
       .values({
         id: 1,
         headerTitle: input.headerTitle,
+        featuredSectionTitle: input.featuredSectionTitle,
+        otherGamesSectionTitle: input.otherGamesSectionTitle,
+        showFeaturedSection: input.showFeaturedSectionTitle,
+        showOtherGamesSection: input.showOtherGamesSectionTitle,
         updatedAt: new Date(),
       })
       .onConflictDoUpdate({
         target: gamesHubSettingsTable.id,
         set: {
           headerTitle: input.headerTitle,
+          featuredSectionTitle: input.featuredSectionTitle,
+          otherGamesSectionTitle: input.otherGamesSectionTitle,
+          showFeaturedSection: input.showFeaturedSectionTitle,
+          showOtherGamesSection: input.showOtherGamesSectionTitle,
           updatedAt: new Date(),
         },
       })

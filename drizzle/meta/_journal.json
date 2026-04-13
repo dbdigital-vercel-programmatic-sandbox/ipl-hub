@@ -50,6 +50,13 @@
       "when": 1776067127360,
       "tag": "0006_empty_wrecking_crew",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1776101439765,
+      "tag": "0007_mature_excalibur",
+      "breakpoints": true
     }
   ]
 }

@@ -19,7 +19,7 @@ export default async function WebviewPage() {
   return (
     <WebviewGamesHub
       games={games}
-      headerTitle={settings.headerTitle}
+      settings={settings}
       className={hindiFont.className}
     />
   )

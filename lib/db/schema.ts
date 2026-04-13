@@ -32,6 +32,12 @@ export const games = pgTable(
 export const gamesHubSettings = pgTable("games_hub_settings", {
   id: integer("id").primaryKey(),
   headerTitle: text("header_title").notNull(),
+  featuredSectionTitle: text("featured_section_title").notNull(),
+  otherGamesSectionTitle: text("other_games_section_title").notNull(),
+  showFeaturedSection: boolean("show_featured_section").default(true).notNull(),
+  showOtherGamesSection: boolean("show_other_games_section")
+    .default(true)
+    .notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 })

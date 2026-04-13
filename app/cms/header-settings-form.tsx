@@ -43,13 +43,10 @@ export function HeaderSettingsForm({
   }, [state])
 
   return (
-    <form
-      action={formAction}
-      className="flex flex-col gap-3 md:flex-row md:items-end"
-    >
-      <div className="flex-1">
+    <form action={formAction} className="grid gap-4 md:grid-cols-2">
+      <div>
         <label className="flex flex-col gap-2 text-sm">
-          <span>Header text</span>
+          <span>Top header text</span>
           <Input
             name="headerTitle"
             defaultValue={settings.headerTitle}
@@ -59,9 +56,60 @@ export function HeaderSettingsForm({
           />
         </label>
       </div>
-      <Button type="submit" disabled={!schemaReady || pending}>
-        {pending ? "Saving..." : "Save header"}
-      </Button>
+
+      <div>
+        <label className="flex flex-col gap-2 text-sm">
+          <span>Featured section text</span>
+          <Input
+            name="featuredSectionTitle"
+            defaultValue={settings.featuredSectionTitle}
+            placeholder="🔥 आज का चैलेंज"
+            required
+            disabled={!schemaReady || pending}
+          />
+        </label>
+      </div>
+
+      <div>
+        <label className="flex flex-col gap-2 text-sm">
+          <span>Other games text</span>
+          <Input
+            name="otherGamesSectionTitle"
+            defaultValue={settings.otherGamesSectionTitle}
+            placeholder="🎮 अन्य गेम्स"
+            required
+            disabled={!schemaReady || pending}
+          />
+        </label>
+      </div>
+
+      <label className="inline-flex min-h-10 items-center gap-2 rounded-lg border px-3 text-sm">
+        <input
+          name="showFeaturedSectionTitle"
+          type="checkbox"
+          defaultChecked={settings.showFeaturedSectionTitle}
+          className="size-4"
+          disabled={!schemaReady || pending}
+        />
+        Show featured header text
+      </label>
+
+      <label className="inline-flex min-h-10 items-center gap-2 rounded-lg border px-3 text-sm">
+        <input
+          name="showOtherGamesSectionTitle"
+          type="checkbox"
+          defaultChecked={settings.showOtherGamesSectionTitle}
+          className="size-4"
+          disabled={!schemaReady || pending}
+        />
+        Show other games header text
+      </label>
+
+      <div className="md:col-span-2">
+        <Button type="submit" disabled={!schemaReady || pending}>
+          {pending ? "Saving..." : "Save settings"}
+        </Button>
+      </div>
     </form>
   )
 }
