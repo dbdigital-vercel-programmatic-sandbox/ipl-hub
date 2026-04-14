@@ -76,7 +76,7 @@ function BigFeedCard({ game }: { game: Game }) {
       href={game.gameUrl || "#"}
       className="flex flex-col gap-3 border-b-2 border-[#EAEAEA] px-4 py-4 last:border-b-0"
     >
-      <div className="min-h-[90px] text-[20px] leading-[30px] font-semibold text-[#2B2B2B]">
+      <div className="text-[20px] leading-[30px] font-semibold text-[#2B2B2B]">
         <p>
           {game.isNew ? (
             <span className="mr-2 inline-block align-[2px]">
