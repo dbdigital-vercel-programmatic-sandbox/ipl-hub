@@ -31,6 +31,7 @@ export type GamesHubSettings = {
   otherGamesSectionTitle: string
   showFeaturedSectionTitle: boolean
   showOtherGamesSectionTitle: boolean
+  otherGamesBigPictureMode: boolean
 }
 
 export type GamesHubSettingsResult = {
@@ -61,6 +62,7 @@ const defaultGamesHubSettings: GamesHubSettings = {
   otherGamesSectionTitle: DEFAULT_GAMES_HUB_OTHER_GAMES_TITLE,
   showFeaturedSectionTitle: true,
   showOtherGamesSectionTitle: true,
+  otherGamesBigPictureMode: false,
 }
 
 const defaultGames: Game[] = [
@@ -192,7 +194,8 @@ function isOutdatedGamesHubSettingsSchemaError(error: unknown): boolean {
     isMissingColumnError(error, "featured_section_title") ||
     isMissingColumnError(error, "other_games_section_title") ||
     isMissingColumnError(error, "show_featured_section") ||
-    isMissingColumnError(error, "show_other_games_section")
+    isMissingColumnError(error, "show_other_games_section") ||
+    isMissingColumnError(error, "other_games_big_picture_mode")
   )
 }
 
@@ -315,6 +318,8 @@ export async function getGamesHubSettings(): Promise<GamesHubSettingsResult> {
         otherGamesSectionTitle: gamesHubSettingsTable.otherGamesSectionTitle,
         showFeaturedSectionTitle: gamesHubSettingsTable.showFeaturedSection,
         showOtherGamesSectionTitle: gamesHubSettingsTable.showOtherGamesSection,
+        otherGamesBigPictureMode:
+          gamesHubSettingsTable.otherGamesBigPictureMode,
       })
       .from(gamesHubSettingsTable)
       .where(eq(gamesHubSettingsTable.id, 1))
@@ -431,6 +436,7 @@ export async function updateGamesHubSettings(input: GamesHubSettings) {
         otherGamesSectionTitle: input.otherGamesSectionTitle,
         showFeaturedSection: input.showFeaturedSectionTitle,
         showOtherGamesSection: input.showOtherGamesSectionTitle,
+        otherGamesBigPictureMode: input.otherGamesBigPictureMode,
         updatedAt: new Date(),
       })
       .onConflictDoUpdate({
@@ -441,6 +447,7 @@ export async function updateGamesHubSettings(input: GamesHubSettings) {
           otherGamesSectionTitle: input.otherGamesSectionTitle,
           showFeaturedSection: input.showFeaturedSectionTitle,
           showOtherGamesSection: input.showOtherGamesSectionTitle,
+          otherGamesBigPictureMode: input.otherGamesBigPictureMode,
           updatedAt: new Date(),
         },
       })

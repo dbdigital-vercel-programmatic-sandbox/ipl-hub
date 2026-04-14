@@ -105,6 +105,17 @@ export function HeaderSettingsForm({
         Show other games header text
       </label>
 
+      <label className="inline-flex min-h-10 items-center gap-2 rounded-lg border px-3 text-sm md:col-span-2">
+        <input
+          name="otherGamesBigPictureMode"
+          type="checkbox"
+          defaultChecked={settings.otherGamesBigPictureMode}
+          className="size-4"
+          disabled={!schemaReady || pending}
+        />
+        Use big feedcard layout for section 2
+      </label>
+
       <div className="md:col-span-2">
         <Button type="submit" disabled={!schemaReady || pending}>
           {pending ? "Saving..." : "Save settings"}

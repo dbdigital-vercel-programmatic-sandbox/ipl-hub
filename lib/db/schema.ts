@@ -38,6 +38,9 @@ export const gamesHubSettings = pgTable("games_hub_settings", {
   showOtherGamesSection: boolean("show_other_games_section")
     .default(true)
     .notNull(),
+  otherGamesBigPictureMode: boolean("other_games_big_picture_mode")
+    .default(false)
+    .notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 })
