@@ -167,7 +167,11 @@ export function WebviewGamesHub({
                     </h2>
                   </div>
                 ) : null}
-                <div>
+                <div
+                  className={
+                    settings.otherGamesBigPictureMode ? "-mx-4" : undefined
+                  }
+                >
                   {otherGames.map((game) =>
                     settings.otherGamesBigPictureMode ? (
                       <BigFeedCard key={game.id} game={game} />
