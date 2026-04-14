@@ -29,15 +29,22 @@ function PromoCard({ game }: { game: Game }) {
   )
 }
 
-function NewBadge() {
+function NewBadge({ large = false }: { large?: boolean }) {
   return (
-    <span className="inline-flex items-center justify-center rounded-[4px] bg-[#F44336] px-1 py-0.5 align-top text-[10px] leading-[13.62px] font-semibold whitespace-nowrap text-white">
-      <span className="relative top-px">NEW</span>
+    <span
+      className={cn(
+        "inline-flex items-center justify-center rounded-[4px] bg-[#F44336] font-semibold whitespace-nowrap text-white",
+        large
+          ? "px-2 py-px text-base leading-6"
+          : "px-1 py-0.5 align-top text-[10px] leading-[13.62px]"
+      )}
+    >
+      <span className={cn(!large && "relative top-px")}>NEW</span>
     </span>
   )
 }
 
-function GameRow({ game }: { game: Game }) {
+function SmallFeedCard({ game }: { game: Game }) {
   return (
     <a
       href={game.gameUrl || "#"}
@@ -58,6 +65,34 @@ function GameRow({ game }: { game: Game }) {
           <span style={{ color: game.slugColor }}>{game.slug}:</span>{" "}
           <span>{game.title}</span>
         </p>
+      </div>
+    </a>
+  )
+}
+
+function BigFeedCard({ game }: { game: Game }) {
+  return (
+    <a
+      href={game.gameUrl || "#"}
+      className="flex flex-col gap-3 border-b-2 border-[#EAEAEA] px-4 py-4 last:border-b-0"
+    >
+      <div className="min-h-[90px] text-[20px] leading-[30px] font-semibold text-[#2B2B2B]">
+        <p>
+          {game.isNew ? (
+            <span className="mr-2 inline-block align-[2px]">
+              <NewBadge large />
+            </span>
+          ) : null}
+          <span style={{ color: game.slugColor }}>{game.slug}:</span>{" "}
+          <span>{game.title}</span>
+        </p>
+      </div>
+      <div className="aspect-[328/246] w-full overflow-hidden rounded-[4px] border border-[#EAEAEA]">
+        <img
+          src={game.heroImageUrl}
+          alt={game.title}
+          className="h-full w-full object-cover"
+        />
       </div>
     </a>
   )
@@ -133,9 +168,13 @@ export function WebviewGamesHub({
                   </div>
                 ) : null}
                 <div>
-                  {otherGames.map((game) => (
-                    <GameRow key={game.id} game={game} />
-                  ))}
+                  {otherGames.map((game) =>
+                    settings.otherGamesBigPictureMode ? (
+                      <BigFeedCard key={game.id} game={game} />
+                    ) : (
+                      <SmallFeedCard key={game.id} game={game} />
+                    )
+                  )}
                 </div>
               </section>
             ) : null}

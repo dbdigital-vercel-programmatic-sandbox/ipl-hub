@@ -1,0 +1,1 @@
+ALTER TABLE "games_hub_settings" ADD COLUMN "other_games_big_picture_mode" boolean DEFAULT false NOT NULL;

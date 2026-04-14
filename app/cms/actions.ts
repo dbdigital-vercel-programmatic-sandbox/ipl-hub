@@ -125,6 +125,9 @@ export async function updateGamesHubSettingsAction(
       showOtherGamesSectionTitle: asChecked(
         formData.get("showOtherGamesSectionTitle")
       ),
+      otherGamesBigPictureMode: asChecked(
+        formData.get("otherGamesBigPictureMode")
+      ),
     })
 
     revalidatePath("/webview")
