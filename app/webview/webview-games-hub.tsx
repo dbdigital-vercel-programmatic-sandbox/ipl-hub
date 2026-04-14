@@ -9,9 +9,14 @@ import type { Game, GamesHubSettings } from "@/lib/games"
 import { cn } from "@/lib/utils"
 
 function PromoCard({ game }: { game: Game }) {
+  function handleClick() {
+    __utils?.triggerAnalyticsEvent(`NewHub Featured ${game.slug} opened`)
+  }
+
   return (
     <a
       href={game.gameUrl || "#"}
+      onClick={handleClick}
       className="overflow-hidden rounded-[10px] border border-[#DADADA] bg-white"
     >
       <img
